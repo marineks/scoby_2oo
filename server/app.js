@@ -9,6 +9,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const mongoose = require("mongoose");
 const app = express();
+const cors = require('cors');
 
 /*
  * Middlewares
@@ -28,6 +29,14 @@ app.use(
     saveUninitialized: true,
   })
 );
+// si on ne prcise pas le temps de la durée de la session => infini
+
+app.use(
+  cors({
+    credentials: true,
+    origin: ['http://localhost:3001'] // <== this will be the URL of our React app (it will be running on port 3000)
+  })
+);
 
 /*
  * Routes
@@ -36,9 +45,11 @@ app.use(
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
+const itemRouter = require("./routes/item");
 
 app.use("/", indexRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/items", itemRouter);
 
 module.exports = app;
